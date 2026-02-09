@@ -1,0 +1,27 @@
+Add-Type @"
+using System;
+using System.Runtime.InteropServices;
+public class Mouse {
+    [DllImport("user32.dll")]
+    public static extern bool GetCursorPos(out POINT lpPoint);
+
+    [DllImport("user32.dll")]
+    public static extern bool SetCursorPos(int X, int Y);
+}
+
+public struct POINT {
+    public int X;
+    public int Y;
+}
+"@
+
+Write-Host "Simulando movimiento de ratón. Ctrl+C para detener."
+
+while ($true) {
+    $p = New-Object POINT
+    [Mouse]::GetCursorPos([ref]$p)
+    [Mouse]::SetCursorPos($p.X + 1, $p.Y)
+    Start-Sleep -Milliseconds 500
+    [Mouse]::SetCursorPos($p.X, $p.Y)
+    Start-Sleep -Seconds 30
+}
